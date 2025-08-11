@@ -1,24 +1,14 @@
-# Introduction
-![Weather Forecast](assets/weather.jpg)
-***
+## Introduction
 The dataset named "Weather Dataset.csv". It is a CSV (Comma Separated Values) file containing hourly weather data.
-The dataset includes the following columns:
-1. Date/Time: The date and time of the observation.
-2. Temp_C: The temperature in degrees Celsius.
-3. Dew Point Temp_C: The dew point temperature in degrees Celsius.
-4. Rel Hum_%: The relative humidity as a percentage.
-5. Wind Speed_km/h: The wind speed in kilometers per hour.
-6. Visibility_km: The visibility in kilometers.
-7. Press_kPa: The atmospheric pressure in kilopascals.
-8. Weather: A text description of the weather conditions.
-
-The file is a standard dataset for practicing data cleaning, analysis, and manipulation using tools like pandas in Python. The dataset contains a total of 8784 entries and does not have any missing values.
-## Cleaning
-1. To clean your data, you can follow these steps:
-2. Load the data: The first step is to load the Weather Dataset.csv file into a pandas DataFrame. This allows you to perform various operations on the data.
-3. Standardize column names: Column names like Date/Time and Rel Hum_% can be difficult to work with due to special characters and spaces. It's best practice to rename them to a consistent format, such as snake_case, for easier access and manipulation.
-4. Convert data types: The date_time column was initially of the object data type. For any time-based analysis, this column needs to be converted to a datetime format.
-5. Handle duplicate rows: It's important to check for and remove any duplicate rows that might skew your analysis.
+The dataset includes the following columns:*Date/Time: The date and time of the observation.
+* Temp_C: The temperature in degrees Celsius.
+* Dew Point Temp_C: The dew point temperature in degrees Celsius.
+* Rel Hum_%: The relative humidity as a percentage.
+* Wind Speed_km/h: The wind speed in kilometers per hour.
+* Visibility_km: The visibility in kilometers.
+* Press_kPa: The atmospheric pressure in kilopascals.
+* Weather: A text description of the weather conditions.
+### Data Cleaning
 ```python
 import pandas as pd
 
@@ -61,7 +51,7 @@ print(df.head())
 # Save the cleaned data
 df.to_csv('datasets/Weather Dataset Cleaned.csv', index=False)
 ```
-## Analysis
+### Analysis
 Here are 10 analytical questions you can solve using pandas with the provided weather dataset:
 1. What is the average temperature (temp_c) for each month?
 2. What is the maximum wind speed (wind_speed_kmh) recorded in the dataset?
@@ -72,8 +62,7 @@ Here are 10 analytical questions you can solve using pandas with the provided we
 7. For each unique weather condition, what are the minimum, maximum, and average values of the pressure (press_kpa)?
 8. Show all records where the weather condition is 'Snow'.
 9. What is the average relative humidity (rel_hum) for each hour of the day?
-10. What is the highest temperature (temp_c) recorded in each year
-
+10. What is the highest temperature (temp_c) recorded in each year?
 #### What is the average temperature (temp_c) for each month?
 ```python
 import pandas as pd
@@ -183,9 +172,170 @@ print("Number of Unique Weather Conditions")
 print(unique_weather_count)
 print("-" * 30)
 ```
-The remaining analysis can be found
-[here](/script/)
-## Tools I Used
-* Python (pandas)
-* Git
-* Vscode
+#### What is the mean visibility (visibility_km) when the weather condition is 'Fog'?
+```python
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv("datasets/Weather Dataset.csv")
+
+# Clean the data as per the previous steps
+column_mapping = {
+    'Date/Time': 'date_time',
+    'Temp_C': 'temp_c',
+    'Dew Point Temp_C': 'dew_point_temp_c',
+    'Rel Hum_%': 'rel_hum',
+    'Wind Speed_km/h': 'wind_speed_kmh',
+    'Visibility_km': 'visibility_km',
+    'Press_kPa': 'press_kpa',
+    'Weather': 'weather'
+}
+df = df.rename(columns=column_mapping)
+df['date_time'] = pd.to_datetime(df['date_time'])
+
+# Mean visbility when weather is "Fog"
+mean_visiblity_fog = df[df["weather"] == "Fog"]["visibility_km"].mean()
+print("Mean Visibility when Weather is Fog")
+print(mean_visiblity_fog)
+print("-" * 30)
+```
+#### Find all instances where the wind speed (wind_speed_kmh) was greater than 20 km/h and visibility (visibility_km) was less than 10 km.
+```python
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv("datasets/Weather Dataset.csv")
+
+# Clean the data as per the previous steps
+column_mapping = {
+    'Date/Time': 'date_time',
+    'Temp_C': 'temp_c',
+    'Dew Point Temp_C': 'dew_point_temp_c',
+    'Rel Hum_%': 'rel_hum',
+    'Wind Speed_km/h': 'wind_speed_kmh',
+    'Visibility_km': 'visibility_km',
+    'Press_kPa': 'press_kpa',
+    'Weather': 'weather'
+}
+df = df.rename(columns=column_mapping)
+df['date_time'] = pd.to_datetime(df['date_time'])
+
+# Filter for high wind speed and low visibilty
+high_wind_low_visibility = df[(df["wind_speed_kmh"] > 20) & (df["visibility_km"] < 10)]
+print("Count of records with wind speed > 20 km/h and visibilty < 10 km")
+print(high_wind_low_visibility.shape[0])
+print("First 5 records")
+print(high_wind_low_visibility.head())
+print("-" * 30)
+```
+#### For each unique weather condition, what are the minimum, maximum, and average values of the pressure (press_kpa)?
+```python
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv("datasets/Weather Dataset.csv")
+
+# Clean the data as per the previous steps
+column_mapping = {
+    'Date/Time': 'date_time',
+    'Temp_C': 'temp_c',
+    'Dew Point Temp_C': 'dew_point_temp_c',
+    'Rel Hum_%': 'rel_hum',
+    'Wind Speed_km/h': 'wind_speed_kmh',
+    'Visibility_km': 'visibility_km',
+    'Press_kPa': 'press_kpa',
+    'Weather': 'weather'
+}
+df = df.rename(columns=column_mapping)
+df['date_time'] = pd.to_datetime(df['date_time'])
+
+# Min, max, and average pressure per weather condition
+pressure_per_weather = df.groupby("weather")["press_kpa"].agg(["min","max","mean"])
+print("Min,Max and Average Pressure per Weather Condition")
+print(pressure_per_weather)
+print("-" * 30)
+```
+#### Show all records where the weather condition is 'Snow'.
+```python
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv("datasets/Weather Dataset.csv")
+
+# Clean the data as per the previous steps
+column_mapping = {
+    'Date/Time': 'date_time',
+    'Temp_C': 'temp_c',
+    'Dew Point Temp_C': 'dew_point_temp_c',
+    'Rel Hum_%': 'rel_hum',
+    'Wind Speed_km/h': 'wind_speed_kmh',
+    'Visibility_km': 'visibility_km',
+    'Press_kPa': 'press_kpa',
+    'Weather': 'weather'
+}
+df = df.rename(columns=column_mapping)
+df['date_time'] = pd.to_datetime(df['date_time'])
+
+# Records where weather is "Snow"
+snow_records = df[df["weather"].str.contains('Snow',case=False,na=False)]
+print("Count of records with 'Snow' in Weather Condition")
+print(snow_records.shape[0])
+print("First 5 records")
+print(snow_records.head())
+print("-" * 30)
+```
+#### What is the average relative humidity (rel_hum) for each hour of the day?
+```python
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv("datasets/Weather Dataset.csv")
+
+# Clean the data as per the previous steps
+column_mapping = {
+    'Date/Time': 'date_time',
+    'Temp_C': 'temp_c',
+    'Dew Point Temp_C': 'dew_point_temp_c',
+    'Rel Hum_%': 'rel_hum',
+    'Wind Speed_km/h': 'wind_speed_kmh',
+    'Visibility_km': 'visibility_km',
+    'Press_kPa': 'press_kpa',
+    'Weather': 'weather'
+}
+df = df.rename(columns=column_mapping)
+df['date_time'] = pd.to_datetime(df['date_time'])
+
+# Average relative humidity per hour
+df["hour"] = df["date_time"].dt.hour
+avg_hum_per_hour = df.groupby("hour")["rel_hum"].mean()
+print("Average Relative Humidity per Hour")
+print(avg_hum_per_hour)
+print("-" * 30)
+```
+#### What is the highest temperature (temp_c) recorded in each year?
+```python
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv("datasets/Weather Dataset.csv")
+
+# Clean the data as per the previous steps
+column_mapping = {
+    'Date/Time': 'date_time',
+    'Temp_C': 'temp_c',
+    'Dew Point Temp_C': 'dew_point_temp_c',
+    'Rel Hum_%': 'rel_hum',
+    'Wind Speed_km/h': 'wind_speed_kmh',
+    'Visibility_km': 'visibility_km',
+    'Press_kPa': 'press_kpa',
+    'Weather': 'weather'
+}
+df = df.rename(columns=column_mapping)
+df['date_time'] = pd.to_datetime(df['date_time'])
+
+# Highest Temperature per year
+df["year"] = df["date_time"].dt.year
+max_temp_per_year = df.groupby("year")["temp_c"].max()
+print("Highest Temperature per Year")
+print(max_temp_per_year)
+```
